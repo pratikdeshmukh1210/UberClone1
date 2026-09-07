@@ -17,13 +17,8 @@ export const getBackendUrl = () => {
 };
 
 const getApiBaseUrl = () => {
-  try {
-    const backendUrl = getBackendUrl();
-    return `${backendUrl}/api`;
-  } catch (error) {
-    console.error(error.message);
-    return "ERR_MISSING_VITE_BACKEND_URL";
-  }
+  const backendUrl = getBackendUrl();
+  return `${backendUrl}/api`;
 };
 
 export const axiosInstance = axios.create({
