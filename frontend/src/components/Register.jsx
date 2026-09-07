@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import { axiosInstance } from "../config/axiosInstance";
 import { useNavigate } from "react-router-dom";
 // import { useDispatch } from "react-redux";
 
@@ -12,7 +12,7 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/signup", data);
+      const res = await axiosInstance.post("/auth/signup", data);
       // dispatch(setUser(res.data.data.user));
   
    localStorage.setItem("token", res.data.data.token);

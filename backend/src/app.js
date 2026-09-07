@@ -29,9 +29,17 @@ app.use(cookieParser()) ;
 //     credentials:true ,
 //   })
 // )
+app.use((req, res, next) => {
+  if (req.headers['access-control-request-private-network']) {
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  }
+  next();
+});
+
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
+  "https://uber-clone1-six.vercel.app",
   process.env.FRONTEND_URL
 ].filter(Boolean);
 

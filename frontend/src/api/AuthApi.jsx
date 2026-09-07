@@ -11,5 +11,6 @@ export const getMe = () =>
 
 // Redirect logic on frontend (Google)
 export const googleLogin = () => {
-    window.location.href = "http://localhost:3000/api/auth/google";
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+    window.location.href = `${backendUrl}/api/auth/google`;
 };

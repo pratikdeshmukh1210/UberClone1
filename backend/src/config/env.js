@@ -17,5 +17,6 @@ export const  env = {
     ENCRYPTION_KEY:process.env.ENCRYPTION_KEY ,
      GOOGLE_CLIENT_ID:process.env.GOOGLE_CLIENT_ID ,
    GOOGLE_CLIENT_SECRET:process.env.GOOGLE_CLIENT_SECRET ,
-   GOOGLE_CALLBACK_URL:process.env.GOOGLE_CALLBACK_URL
+   GOOGLE_CALLBACK_URL:process.env.GOOGLE_CALLBACK_URL ,
+   FRONTEND_URL:process.env.FRONTEND_URL || "http://localhost:5173"
 }

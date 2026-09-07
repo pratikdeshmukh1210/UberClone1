@@ -12,7 +12,13 @@ router.get("/me", authenticate, getMe);
 /* GOOGLE LOGIN START */
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  (req, res, next) => {
+    console.log("=== OAUTH RUNTIME DEBUG INFO ===");
+    console.log("Runtime GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
+    console.log("Runtime GOOGLE_CALLBACK_URL:", process.env.GOOGLE_CALLBACK_URL);
+    console.log("================================");
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+  }
 );
 
 /* GOOGLE CALLBACK */
