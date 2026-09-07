@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../auth/AuthSlice';
+import { logout, retrySessionRestoration } from '../../auth/AuthSlice';
 
 const PrivateRoute = ({ allowedRoles = [] }) => {
     const dispatch = useDispatch();
@@ -25,21 +25,21 @@ const PrivateRoute = ({ allowedRoles = [] }) => {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    // EDGE CASE: Network Error / Server Down while restoring session
-    // Token exists, restoration completed without auth error, but user is null due to network/server failure
-    if (token && !user) {
+    // STATE 4: SESSION_RESTORE_ERROR
+    // Token exists in localStorage, but /api/auth/me failed due to network/server issue (not 401/403)
+    if (token && !user && !isRestoringSession) {
         return (
             <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 text-center font-sans">
                 <h2 className="text-2xl font-bold text-red-500 mb-2">Unable to Connect to Server</h2>
                 <p className="text-gray-400 mb-6 max-w-md">
-                    We couldn't reach the server to restore your session. Please check your network connection.
+                    We couldn't reach the authentication server to restore your session. Please check your network connection.
                 </p>
                 <div className="flex gap-4">
                     <button
-                        onClick={() => window.location.reload()}
+                        onClick={() => dispatch(retrySessionRestoration())}
                         className="bg-white text-black px-6 py-2 rounded-md font-semibold hover:bg-gray-200 transition"
                     >
-                        Retry
+                        Retry Connection
                     </button>
                     <button
                         onClick={() => dispatch(logout())}
