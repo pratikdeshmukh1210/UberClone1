@@ -2,24 +2,30 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { axiosInstance } from "../config/axiosInstance";
 import { useNavigate } from "react-router-dom";
-// import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setUser, setToken } from "../modules/auth/AuthSlice";
 
 const Register = () => {
-  
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { register, handleSubmit, formState:{ isSubmitting } } = useForm();
 
   const onSubmit = async (data) => {
     try {
       const res = await axiosInstance.post("/auth/signup", data);
-      // dispatch(setUser(res.data.data.user));
-  
-   localStorage.setItem("token", res.data.data.token);
-   alert("Token saved");
-      navigate("/home");
-    } catch {
-      alert("Registration failed");
+      const user = res.data?.data?.user;
+      const token = res.data?.data?.token;
+
+      if (user && token) {
+        dispatch(setUser(user));
+        dispatch(setToken(token));
+        const targetRoute = user.role === 'DRIVER' ? '/driver/dashboard' : '/rider/dashboard';
+        navigate(targetRoute, { replace: true });
+      } else {
+        alert("Registration failed");
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "Registration failed");
     }
   };
 

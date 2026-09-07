@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { signup, googleLogin } from "../AuthApi";
+import { setUser, setToken } from "../AuthSlice";
 
 const UberLogo = () => (
     <svg width="60" height="24" viewBox="0 0 75 24" fill="currentColor">
@@ -10,6 +12,7 @@ const UberLogo = () => (
 );
 
 const RegisterPage = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [serverError, setServerError] = useState("");
 
@@ -26,8 +29,18 @@ const RegisterPage = () => {
             data.phone = data.phone.replace(/\D/g, "");
 
             const res = await signup(data);
-            alert("Registration successful! Redirecting to login...");
-            navigate("/login");
+            const user = res.data?.data?.user;
+            const token = res.data?.data?.token;
+
+            if (user && token) {
+                dispatch(setUser(user));
+                dispatch(setToken(token));
+
+                const targetRoute = user.role === 'DRIVER' ? '/driver/dashboard' : '/rider/dashboard';
+                navigate(targetRoute, { replace: true });
+            } else {
+                setServerError("Registration succeeded but session could not be established. Please login.");
+            }
         } catch (error) {
             const message = error.response?.data?.message || "Something went wrong. Please try again.";
             setServerError(message);
