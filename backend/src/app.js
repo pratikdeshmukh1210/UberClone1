@@ -46,10 +46,14 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.some(o => origin.startsWith(o))) {
-        return callback(null, true);
+      if (!origin) return callback(null, true);
+      const isAllowed = allowedOrigins.some((allowed) =>
+        allowed && (origin === allowed || origin.startsWith(allowed) || (allowed.startsWith("http") && origin.includes(allowed.replace(/^https?:\/\//, ""))))
+      );
+      if (isAllowed) {
+        return callback(null, origin);
       }
-      return callback(null, true);
+      return callback(new Error(`CORS policy violation: Origin ${origin} not allowed`), false);
     },
     credentials: true,
   })

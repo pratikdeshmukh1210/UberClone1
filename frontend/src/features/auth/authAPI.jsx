@@ -1,4 +1,4 @@
-import { axiosInstance } from "../../services/axiosInstance";
+import { axiosInstance } from "../../config/axiosInstance";
 
 export const loginUser = (data) =>
   axiosInstance.post("/auth/login", data);

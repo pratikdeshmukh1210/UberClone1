@@ -102,7 +102,9 @@ const Login = () => {
             <button
               type="button"
               onClick={() => {
-                const backendUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL?.replace(/\/api\/?$/, "") || "http://localhost:3000";
+                const backendUrl = import.meta.env.VITE_BACKEND_URL 
+                  || import.meta.env.VITE_API_BASE_URL?.replace(/\/api\/?$/, "") 
+                  || (import.meta.env.DEV ? "http://localhost:3000" : window.location.origin);
                 window.location.href = `${backendUrl}/api/auth/google`;
               }}
               className="w-full border border-gray-300 p-3 rounded-md text-lg font-medium flex items-center justify-center gap-3 hover:bg-gray-100 transition"
