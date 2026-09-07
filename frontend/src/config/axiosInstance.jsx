@@ -1,4 +1,6 @@
 import axios from "axios" ;
+import { store } from "../store/store";
+import { logout } from "../modules/auth/AuthSlice";
 
 export const getBackendUrl = () => {
   const envUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL?.replace(/\/api\/?$/, "");
@@ -45,7 +47,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
+      store.dispatch(logout());
     }
     return Promise.reject(error);
   }

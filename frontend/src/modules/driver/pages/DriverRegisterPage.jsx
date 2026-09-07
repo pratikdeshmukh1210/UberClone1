@@ -47,8 +47,6 @@ const DriverRegisterPage = () => {
             console.error("Driver Registration Error:", err);
             if (err.response?.status === 401) {
                 alert("Your session has expired. Please log in again.");
-                dispatch(logout());
-                navigate("/login");
             } else if (err.response?.status === 400) {
                 const backendErrors = err.response?.data?.errors;
                 let errMsg = err.response?.data?.message || "Validation Failed";

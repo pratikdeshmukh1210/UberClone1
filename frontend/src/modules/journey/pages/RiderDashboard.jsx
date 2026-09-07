@@ -164,8 +164,6 @@ const RiderDashboard = () => {
         } catch (err) {
             if (err.response?.status === 401) {
                 alert("Your session has expired or is invalid. Please login again.");
-                localStorage.removeItem("token");
-                navigate("/login");
             } else {
                 alert(err.response?.data?.message || "Error creating ride");
             }
