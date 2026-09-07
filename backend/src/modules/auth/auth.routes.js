@@ -18,10 +18,17 @@ router.get(
 /* GOOGLE CALLBACK */
 router.get(
   "/google/callback",
-  passport.authenticate("google", { session: false, failureRedirect: "http://localhost:5173/login?error=google_failed" }),
+  (req, res, next) => {
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    passport.authenticate("google", {
+      session: false,
+      failureRedirect: `${frontendUrl}/login?error=google_failed`
+    })(req, res, next);
+  },
   (req, res) => {
     const token = req.user.token;
-    res.redirect(`http://localhost:5173/auth/callback?token=${token}`);
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
   }
 );
 
