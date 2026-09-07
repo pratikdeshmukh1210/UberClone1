@@ -1,23 +1,35 @@
 import axios from "axios" ;
 
-const getApiBaseUrl = () => {
-  if (import.meta.env.VITE_BACKEND_URL) {
-    const base = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "");
-    return `${base}/api`;
+export const getBackendUrl = () => {
+  const envUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_BASE_URL?.replace(/\/api\/?$/, "");
+  
+  if (envUrl) {
+    return envUrl.replace(/\/$/, "");
   }
-  if (import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL;
-  }
+  
   if (import.meta.env.DEV) {
-    return "http://localhost:3000/api";
+    return "http://localhost:3000";
   }
-  return "/api";
+  
+  throw new Error(
+    "FATAL CONFIGURATION ERROR: VITE_BACKEND_URL is not set! Please define VITE_BACKEND_URL in your production environment variables."
+  );
+};
+
+const getApiBaseUrl = () => {
+  try {
+    const backendUrl = getBackendUrl();
+    return `${backendUrl}/api`;
+  } catch (error) {
+    console.error(error.message);
+    return "ERR_MISSING_VITE_BACKEND_URL";
+  }
 };
 
 export const axiosInstance = axios.create({
     baseURL: getApiBaseUrl(),
     withCredentials: true
-})
+});
 
 // Add interceptor to attach token to all requests
 axiosInstance.interceptors.request.use(
