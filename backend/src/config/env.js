@@ -3,15 +3,15 @@ dotenv.config() ;
 
 
 
-const requiredEnvVars = ['PORT', 'AUTHOR_NAME', 'MONGODB_URL', 'JWT_SECRET', 'ENCRYPTION_KEY', 'GOOGLE_CALLBACK_URL', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'];
+const requiredEnvVars = ['MONGODB_URL', 'JWT_SECRET', 'ENCRYPTION_KEY', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET'];
 requiredEnvVars.forEach((envVar) => {
   if (!process.env[envVar]) {
-    console.warn(`[WARNING] missing required environment variable: ${envVar}`);
+    console.warn(`[WARNING] Missing required environment variable: ${envVar}`);
   }
 });
 export const env = {
     PORT: process.env.PORT || 3000,
-    AUTHOR_NAME: process.env.AUTHOR_NAME,
+    AUTHOR_NAME: process.env.AUTHOR_NAME || 'Developer',
     MONGODB_URL: process.env.MONGODB_URL,
     JWT_SECRET: process.env.JWT_SECRET,
     ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,

@@ -20,7 +20,7 @@ router.get(
 router.get(
   "/google/callback",
   (req, res, next) => {
-    const frontendUrl = env.FRONTEND_URL || "http://localhost:5173";
+    const frontendUrl = (env.FRONTEND_URL || "http://localhost:5173").replace(/\/$/, "");
     passport.authenticate("google", {
       session: false,
       failureRedirect: `${frontendUrl}/login?error=google_failed`
@@ -28,7 +28,7 @@ router.get(
   },
   (req, res) => {
     const token = req.user.token;
-    const frontendUrl = env.FRONTEND_URL || "http://localhost:5173";
+    const frontendUrl = (env.FRONTEND_URL || "http://localhost:5173").replace(/\/$/, "");
     res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
   }
 );

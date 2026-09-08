@@ -19,8 +19,8 @@ const options = {
     },
     servers: [
       {
-        url: serverUrl,
-        description: `Development server (Port: ${port})`
+        url: '/',
+        description: 'Current environment server'
       }
     ],
     components: {

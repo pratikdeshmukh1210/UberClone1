@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors' ;
 import session from "express-session";
 import passport from "./config/passport.js";
+import { env } from "./config/env.js";
 
 const app = express() ;
 
@@ -23,16 +24,15 @@ app.use(express.json()) ;
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser()) ;
-// app.use(
-//   cors({
-//     origin:"*" ,
-//     credentials:true ,
-//   })
-// )
+
+const configuredFrontends = env.FRONTEND_URL
+  ? env.FRONTEND_URL.split(',').map((url) => url.trim().replace(/\/$/, ""))
+  : [];
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://uber-clone1-six.vercel.app",
-  process.env.FRONTEND_URL
+  ...configuredFrontends
 ].filter(Boolean);
 
 app.use(
@@ -41,7 +41,8 @@ app.use(
       // Allow requests with no origin (like mobile apps, curl, Postman)
       if (!origin) return callback(null, true);
       
-      if (allowedOrigins.includes(origin)) {
+      const cleanOrigin = origin.replace(/\/$/, "");
+      if (allowedOrigins.some((allowed) => allowed.replace(/\/$/, "") === cleanOrigin)) {
         return callback(null, origin);
       }
       
@@ -69,7 +70,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+app.use(session({ secret: env.JWT_SECRET || "uberclone_session_secret", resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
