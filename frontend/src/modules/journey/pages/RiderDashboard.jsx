@@ -98,26 +98,26 @@ const RiderDashboard = () => {
     const [distanceKm, setDistanceKm] = useState(0);
     const [durationMins, setDurationMins] = useState(0);
     const [routePolyline, setRoutePolyline] = useState([]);
-    const [mapMode, setMapMode] = useState(MAP_MODES.HYBRID);
+    const [mapMode, setMapMode] = useState(MAP_MODES.ROADMAP);
 
     // 1. Live Area Autocomplete Search
     useEffect(() => {
-        if (pickup.length < 2) return;
+        if (pickup.length < 2 || !showPickupDropdown) return;
         const timer = setTimeout(async () => {
             const results = await searchLocations(pickup);
             setPickupSuggestions(results);
         }, 300);
         return () => clearTimeout(timer);
-    }, [pickup]);
+    }, [pickup, showPickupDropdown]);
 
     useEffect(() => {
-        if (destination.length < 2) return;
+        if (destination.length < 2 || !showDropoffDropdown) return;
         const timer = setTimeout(async () => {
             const results = await searchLocations(destination);
             setDropoffSuggestions(results);
         }, 300);
         return () => clearTimeout(timer);
-    }, [destination]);
+    }, [destination, showDropoffDropdown]);
 
     // 2. Fetch OSRM Real Road Driving Route & KM Distance
     useEffect(() => {

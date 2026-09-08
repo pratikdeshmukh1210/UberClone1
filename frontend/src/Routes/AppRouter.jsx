@@ -24,8 +24,7 @@ import PrivateRoute from "../modules/common/middleware/PrivateRoute";
 
 import ErrorPage from "../modules/common/pages/ErrorPage";
 
-const AppRouter = () => {
-  const router = createBrowserRouter([
+const router = createBrowserRouter([
     // Public Routes
     { path: "/", element: <LandingPage />, errorElement: <ErrorPage /> },
     { path: "/home", element: <LandingPage />, errorElement: <ErrorPage /> },
@@ -63,8 +62,9 @@ const AppRouter = () => {
         { path: "/active-ride", element: <ActiveRidePage /> }
       ]
     }
-  ]);
+]);
 
+const AppRouter = () => {
   return <RouterProvider router={router} />;
 };
 

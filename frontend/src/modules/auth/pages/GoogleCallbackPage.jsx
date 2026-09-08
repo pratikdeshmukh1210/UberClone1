@@ -14,24 +14,31 @@ const GoogleCallbackPage = () => {
             const token = searchParams.get("token");
             if (token) {
                 // 1. Save token into LocalStorage & Redux immediately
-                localStorage.setItem("token", token);
                 dispatch(setToken(token));
 
-                // Fetch user profile
+                // Fetch user profile immediately
                 getMe()
                     .then((res) => {
                         const user = res.data?.data?.user;
                         if (user) {
-                            dispatch(setUser(user));
+                            dispatch(setUser(user)); // also sets isRestoringSession = false
                             const target = user.role === 'DRIVER' ? '/driver/dashboard' : '/rider/dashboard';
                             navigate(target, { replace: true });
                         } else {
+                            dispatch(finishSessionRestoration());
                             navigate("/home", { replace: true });
                         }
                     })
                     .catch((err) => {
-                        console.error("Failed to fetch user profile:", err);
-                        navigate("/home", { replace: true });
+                        const status = err.response?.status;
+                        if (status === 401 || status === 403) {
+                            dispatch(logout());
+                            navigate("/login?error=google_auth_failed", { replace: true });
+                        } else {
+                            // Network error: preserve token, set isRestoringSession=false (or leave it to retry)
+                            dispatch(finishSessionRestoration());
+                            navigate("/home", { replace: true });
+                        }
                     });
             } else {
                 navigate("/login", { replace: true });
